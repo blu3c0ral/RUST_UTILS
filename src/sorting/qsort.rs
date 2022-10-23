@@ -52,7 +52,7 @@ where   T: Default + Ord,
         }
     }
 
-    fn partition(&self, mut v: Vec<T>, mut low: usize, mut high: usize) -> (Vec<T>, usize) {
+    fn partition(&self, mut v: Vec<T>, mut low: usize, high: usize) -> (Vec<T>, usize) {
         let pivot = self.get_pivot_idx(low, high);
 
         v.swap(pivot, high - 1);
@@ -64,21 +64,23 @@ where   T: Default + Ord,
             }
         }
 
-        v.swap(low + 1, high - 1);
+        v.swap(low, high - 1);
 
-        (v, low + 1)
+        (v, low)
     }
 
-    fn sort(&self, mut v: Vec<T>) -> Vec<T> {
+    pub fn sort(&self, mut v: Vec<T>) -> Vec<T> {
         let mut low: usize = 0;
         let mut high: usize = v.len();
 
-        let mut idx = 0;
+        let mut idx: usize;
 
         let mut stack: List<(usize, usize)> = List::new();
 
-        stack.push((low, high));
-
+        if high - low > 1 {
+            stack.push((low, high));
+        }
+        
         while !stack.is_empty() {
             stack.pop().map(|x| {
                 (low, high) = x;
